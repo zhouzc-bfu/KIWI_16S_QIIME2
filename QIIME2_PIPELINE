@@ -8,4 +8,31 @@ tmux new -s 111 # 创建名为111的会话
 先按下 Ctrl + B，然后松开，再按 D # 脱离会话
 tmux attach -t 111 # 重新进入会话
 
-二、制备
+二、制备manifest.tsv文件（该文件是qimme2必须文件，用于告诉软件原始数据名称及存放路径）
+# 1. 创建表头
+printf "sample-id\tforward-absolute-filepath\treverse-absolute-filepath\n" > manifest.tsv
+# 2. 处理 kiwi 文件夹下的数据
+for f in kiwi/*forward.fastq.gz; do
+    # 提取样本 ID (AG0529-xxxx)
+    sample=$(basename "$f" | cut -d'_' -f3)
+    r1=$(readlink -f "$f")
+    r2=$(readlink -f "${f%.forward.fastq.gz}.reverse.fastq.gz")
+    printf "$sample\t$r1\t$r2\n" >> manifest.tsv
+done
+# 3. 处理 rowi 文件夹下的数据 (排除包含 _PL 的样本)
+for f in rowi/*forward.fastq.gz; do
+    # 过滤掉包含 _PL 的样本
+    if [[ $f == *"_PL"* ]]; then continue; fi
+    # 提取样本 ID (rowi_xxx)
+    sample=$(basename "$f" | grep -o "rowi_[0-9]\+")
+    r1=$(readlink -f "$f")
+    r2=$(readlink -f "${f%.forward.fastq.gz}.reverse.fastq.gz")
+    printf "$sample\t$r1\t$r2\n" >> manifest.tsv
+done
+
+三、导入数据
+qiime tools import \
+  --type 'SampleData[PairedEndSequencesWithQuality]' \
+  --input-path manifest.tsv \
+  --output-path kiwi_rowi_combined.qza \
+  --input-format PairedEndFastqManifestPhred33V2
