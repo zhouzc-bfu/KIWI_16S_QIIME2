@@ -1,1 +1,11 @@
+一、安装QIIME2-2026.1
+# 若conda安装不成功，可尝试memba安装再用conda激活
+mamba env create --name qiime2 --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2026.1/amplicon/released/qiime2-amplicon-ubuntu-latest-conda.yml
+conda activate qiime2
+# 因NeSI限制，每次登录终端需要通过source ~/.bashrc手动激活conda base环境
+# 另外NeSI限制，screen命令（用于将任务挂后台运行）无法直接使用，可用tmux代替，方法如下：
+tmux new -s 111 # 创建名为111的会话
+先按下 Ctrl + B，然后松开，再按 D # 脱离会话
+tmux attach -t 111 # 重新进入会话
 
+二、制备
