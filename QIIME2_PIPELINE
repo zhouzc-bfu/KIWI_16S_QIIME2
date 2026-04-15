@@ -55,3 +55,8 @@ qiime dada2 denoise-paired \
   --o-table asv-table.qza \
   --o-denoising-stats denoising-stats.qza \
   --o-base-transition-stats base-transition-stats.qza
+
+五、检查去噪质量
+qiime metadata tabulate \
+  --m-input-file denoising-stats.qza \
+  --o-visualization denoising-stats.qzv
