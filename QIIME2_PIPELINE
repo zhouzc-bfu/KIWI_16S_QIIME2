@@ -30,9 +30,15 @@ for f in rowi/*forward.fastq.gz; do
     printf "$sample\t$r1\t$r2\n" >> manifest.tsv
 done
 
-三、导入数据
+三、导入数据并查看质量报告
+1.导入数据
 qiime tools import \
   --type 'SampleData[PairedEndSequencesWithQuality]' \
   --input-path manifest.tsv \
   --output-path kiwi_rowi_combined.qza \
   --input-format PairedEndFastqManifestPhred33V2
+2.生成质量报告
+qiime demux summarize \
+  --i-data kiwi_rowi_combined.qza \
+  --o-visualization demux.qzv
+得到demux.qzv后将它拖进view.qiime2.org查看
