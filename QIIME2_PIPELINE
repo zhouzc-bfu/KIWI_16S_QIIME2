@@ -41,4 +41,17 @@ qiime tools import \
 qiime demux summarize \
   --i-data demux.qza \
   --o-visualization demux.qzv
-得到demux.qzv后将它拖进view.qiime2.org查看
+# 得到demux.qzv后将它拖进view.qiime2.org查看，根据质量评估去决定DADA2去噪参数
+
+四、使用DADA2去噪
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs demux.qza \
+  --p-trim-left-f 0 \
+  --p-trim-left-r 0 \
+  --p-trunc-len-f 225 \
+  --p-trunc-len-r 220 \
+  --p-n-threads 20 \
+  --o-representative-sequences asv-seqs.qza \
+  --o-table asv-table.qza \
+  --o-denoising-stats denoising-stats.qza \
+  --o-base-transition-stats base-transition-stats.qza
